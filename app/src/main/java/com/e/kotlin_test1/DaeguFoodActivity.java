@@ -16,12 +16,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class DaeguFoodActivity extends AppCompatActivity {
 
     private TextView result_tv;
+    private List<Restaurant> restaurantList = new ArrayList<>();
+    private List<Restaurant2> restaurant2List = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +74,14 @@ public class DaeguFoodActivity extends AppCompatActivity {
                 result = result.replace(":\",",":\"\",");
                 result = result.replaceAll("^[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]\"[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]","");
 
-                for(int i = 0; i < 30; i++){
+                /*for(int i = 0; i < 30; i++){
                     System.out.print(result.charAt(100833+i));
                 }
                 System.out.println();
                 for(int i = 0; i < 30; i++){
                     System.out.print(result.charAt(18230+i));
                 }
-                System.out.println();
+                System.out.println();*/
                 String name, menu,address;
                 int count = 0;
                 JSONObject jsonObject = new JSONObject(result);
@@ -102,6 +106,8 @@ public class DaeguFoodActivity extends AppCompatActivity {
             menu = values[1];
             address = values[2];
             result_tv.append(name+":"+address+"\n"+menu+"\n");
+            restaurantList.add(new Restaurant(name,menu,address));
+            restaurant2List.add(new Restaurant2(name,menu,address));
         }
         @Override
         public void onPostExecute(Boolean result){
