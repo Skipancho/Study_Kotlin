@@ -6,8 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".DaeguFoodActivity">
-    <TextView
-        android:id="@+id/result_tv"
+    <ListView
+        android:id="@+id/lv_1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:dividerHeight="5dp"
+        android:divider="#00000000"/>
 </LinearLayout>

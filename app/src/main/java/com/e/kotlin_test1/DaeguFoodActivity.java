@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -23,17 +24,20 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class DaeguFoodActivity extends AppCompatActivity {
 
-    private TextView result_tv;
     private List<Restaurant> restaurantList = new ArrayList<>();
     private List<Restaurant2> restaurant2List = new ArrayList<>();
+    private RestaurantAdapter adapter;
+    private ListView lv_1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daegu_food);
 
-        result_tv = findViewById(R.id.result_tv);
-        result_tv.setMovementMethod(new ScrollingMovementMethod());
+        lv_1 = findViewById(R.id.lv_1);
+        adapter = new RestaurantAdapter(restaurant2List,this);
+        lv_1.setAdapter(adapter);
+
         new BackgroundTask("달서구").execute();
     }
 
@@ -105,13 +109,12 @@ public class DaeguFoodActivity extends AppCompatActivity {
             name = values[0];
             menu = values[1];
             address = values[2];
-            result_tv.append(name+":"+address+"\n"+menu+"\n");
             restaurantList.add(new Restaurant(name,menu,address));
             restaurant2List.add(new Restaurant2(name,menu,address));
         }
         @Override
         public void onPostExecute(Boolean result){
-
+            adapter.notifyDataSetChanged();
         }
     }
 }
