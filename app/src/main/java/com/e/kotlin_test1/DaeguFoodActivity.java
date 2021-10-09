@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,17 +30,29 @@ public class DaeguFoodActivity extends AppCompatActivity {
     private List<Restaurant2> restaurant2List = new ArrayList<>();
     private RestaurantAdapter adapter;
     private ListView lv_1;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daegu_food);
 
+        spinner = findViewById(R.id.spinner_1);
         lv_1 = findViewById(R.id.lv_1);
+
         adapter = new RestaurantAdapter(restaurant2List,this);
         lv_1.setAdapter(adapter);
-
+        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(this,R.array.daegu,android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
         new BackgroundTask("달서구").execute();
+
+        findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String s_text = spinner.getSelectedItem().toString();
+                new BackgroundTask(s_text).execute();
+            }
+        });
     }
 
     class BackgroundTask extends AsyncTask<Void,String,Boolean> {
@@ -56,6 +70,8 @@ public class DaeguFoodActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            restaurant2List.clear();
+            restaurantList.clear();
         }
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -76,16 +92,16 @@ public class DaeguFoodActivity extends AppCompatActivity {
                 result = result.replace(", }","}");
                 result = result.replace("\"\"","\"");
                 result = result.replace(":\",",":\"\",");
-                result = result.replaceAll("^[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]\"[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]","");
+                result = result.replaceAll("[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]\"[ |ㄱ-ㅎ|ㅏ-ㅣ|가-힣]","");
 
-                /*for(int i = 0; i < 30; i++){
+                for(int i = 0; i < 30; i++){
                     System.out.print(result.charAt(100833+i));
                 }
                 System.out.println();
                 for(int i = 0; i < 30; i++){
                     System.out.print(result.charAt(18230+i));
                 }
-                System.out.println();*/
+                System.out.println();
                 String name, menu,address;
                 int count = 0;
                 JSONObject jsonObject = new JSONObject(result);
@@ -95,7 +111,7 @@ public class DaeguFoodActivity extends AppCompatActivity {
                     name = object.getString("BZ_NM");
                     menu = object.getString("MNU");
                     address = object.getString("GNG_CS");
-                    publishProgress(name,menu,address);
+                    publishProgress(name,address,menu);
                     count++;
                 }
             } catch (Exception e) {
@@ -107,10 +123,10 @@ public class DaeguFoodActivity extends AppCompatActivity {
         public void onProgressUpdate(String... values){
             String name , address, menu;
             name = values[0];
-            menu = values[1];
-            address = values[2];
-            restaurantList.add(new Restaurant(name,menu,address));
-            restaurant2List.add(new Restaurant2(name,menu,address));
+            address = values[1];
+            menu = values[2];
+            restaurantList.add(new Restaurant(name,address,menu));
+            restaurant2List.add(new Restaurant2(name,address,menu));
         }
         @Override
         public void onPostExecute(Boolean result){
