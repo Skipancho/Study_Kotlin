@@ -8,6 +8,10 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -17,8 +21,11 @@ import java.lang.Exception
 import java.lang.StringBuilder
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
+import kotlin.coroutines.coroutineContext
 
 class MainActivity : AppCompatActivity() {
+
+    private val coroutineScope : CoroutineScope = CoroutineScope(Dispatchers.Main);
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +46,14 @@ class MainActivity : AppCompatActivity() {
         btn_1.setOnClickListener(listener)
         btn_2.setOnClickListener(listener)
         btn_3.setOnClickListener(listener)
+
+
+    }
+
+    private fun startTask(view: View){
+        coroutineScope.launch {
+
+        }
     }
 
     private fun writeText(){
